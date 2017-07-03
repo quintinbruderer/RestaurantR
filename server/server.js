@@ -5,6 +5,12 @@ const app = express();
 const config = require('./config')
 const User = require('./userModel')
 const Room = require('./roomModel')
+const jwt = require('jsonwebtoken')
+const moment = require('moment')
+const body-parser = require('body-parser')
+const react-bootstrap = require('react-bootstrap')
+const react = require('react')
+const react-dom = require('react-dom')
 
 const port = process.env.PORT || 3001;
 app.use(morgan('dev'));
