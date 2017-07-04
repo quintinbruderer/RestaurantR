@@ -12,6 +12,7 @@ const CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 const port = process.env.PORT || 3001;
 app.use(morgan('dev'));
+app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
 //we can add middleware(?) later in here. Morgan will be a help.
 
@@ -45,8 +46,8 @@ app.get('/room', (req, res) => {
 
 //creating a room in the db,
 app.post('/room', (req, res) => {
-  console.log("Hello! :", req.body)
   const {lat, lng, username} = req.body
+  console.log("LOGs ", req.body)
   //room name generator as middleware
     //room name generator
    generateId((roomID)=>{
@@ -57,12 +58,14 @@ app.post('/room', (req, res) => {
        roomGuests:[ {
                     username: username,
                     restChoices: []
-                  }],//
+                  }],
+
        roomLocation: {lat, lng},//
        roomList: [],
        roomResult: {},
 
      })
+       console.log("COONSOOL LAWG" , username)
      room.save((err, room) => {
        res.json({
          roomID : roomID
@@ -82,11 +85,22 @@ app.get('/setStatus/:roomID/:ready', (req, res) => {
 
 app.put('/room', (req, res) => {
   const {roomCode, username} = req.body
-  Room.findOneandUpdate({roomCode: roomCode},
-                        {roomGuests: {username: username,
-                        restChoices: []
-                        }
-                      })
+  // currently allows duplicate names, maybe fix that
+  Room.findOne({roomCode: roomCode}, (err, room) => {
+    console.log("CONSOLE LOG " , room)
+    room.roomGuests = room.roomGuests.concat({
+                    username: username,
+                    restChoices: []
+                  })
+    room.save((err, result) => {
+      if (err){
+        res.status(500).json(err)
+      }
+      res.json({room, result})
+    })
+
+  })
+
   //add user to a room
 })
 
