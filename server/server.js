@@ -7,6 +7,8 @@ const User = require('./userModel')
 const Room = require('./roomModel')
 const jwt = require('jsonwebtoken')
 const bodyParser = require('body-parser')
+const request = require('superagent');
+
 
 const CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
@@ -50,10 +52,10 @@ app.post('/room', (req, res) => {
   console.log("LOGs ", req.body)
   //room name generator as middleware
     //room name generator
-   generateId((roomID)=>{
-     console.log("Where are we going to dinner" + username + "/w" + roomID)
+   generateId((roomCode)=>{
+     console.log("Where are we going to dinner" + username + "/w" + roomCode)
      let room = new Room({
-       roomCode: roomID,
+       roomCode: roomCode,
        ready: false,
        roomGuests:[ {
                     username: username,
@@ -68,20 +70,12 @@ app.post('/room', (req, res) => {
        console.log("COONSOOL LAWG" , username)
      room.save((err, room) => {
        res.json({
-         roomID : roomID
+         roomCode : roomCode
        })
      });
    })
 })
 
-app.get('/setStatus/:roomID/:ready', (req, res) => {
-  const {roomID, ready} = req.params;
-  Room.findOneAndUpdate({ roomID: roomID},
-                        {ready: ready === 'true'},
-                        (err, room) => {
-                          res.json({whatever: true})
-                        })
-})
 
 app.put('/room', (req, res) => {
   const {roomCode, username} = req.body
@@ -104,8 +98,55 @@ app.put('/room', (req, res) => {
   //add user to a room
 })
 
+app.put('/setStatus', (req, res) => {
+  const {roomCode, ready} = req.body
+  Room.findOne({roomCode: roomCode}, (err, room) => {
+    room.ready = true;
+    room.save((err, result) => {
+      if (err){
+        res.status(500).json(err)
+      }
+      res.json({room, result})
+    })
+  })
+})
 
 // app.put('/zomatoCall', (req, res) => {
+// //fetch here?
+//   const {roomCode, roomList} = req.body
+//   Room.findOne({roomCode: roomCode}, (err, room) => {
+//     fetch(`https://developers.zomato.com/api/v2.1/search?lat=${room.roomLocation.lat}&lon=${room.roomLocation.lng}`, {
+//       //method: 'GET',
+//       headers: {
+//         'Accept': 'application/json',
+//         'user-key': 'b3549408bdd1a9da0380f2f2aaf4efa6'
+//       }
+//     })
+//     .then((response) => response.json())
+//     .then((responseJSON) => {
+//         console.log(responseJson);
+//
+//         //room room list add stuff
+//       })
+//   })
+// })
+let url = `https://developers.zomato.com/api/v2.1/search?lat=42&lon=-112`;
+
+app.get('/ApiTest', (req, res) => {
+  request
+  .get(url)
+  //.send({ name: 'Manny', species: 'cat' })
+  .set('user-key', 'b3549408bdd1a9da0380f2f2aaf4efa6')
+  .set('Accept', 'application/json')
+  .end(function(err, res){
+      if (err || !res.ok) {
+        console.log('Oh no! error');
+      } else {
+        console.log('yay got ' + JSON.stringify(res.body));
+      }
+    });
+    res.json({success: true})
+})
 //   Room.findOneandUpdate({})
 // })
 
