@@ -85,7 +85,7 @@ app.get('/setStatus/:roomID/:ready', (req, res) => {
 
 app.put('/room', (req, res) => {
   const {roomCode, username} = req.body
-  // currently allows duplicate names, maybe fix that
+  // this currently allows duplicate names, maybe fix that
   Room.findOne({roomCode: roomCode}, (err, room) => {
     console.log("CONSOLE LOG " , room)
     room.roomGuests = room.roomGuests.concat({
