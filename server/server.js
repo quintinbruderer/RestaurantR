@@ -1,13 +1,15 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const morgan = require('morgan')
+const morgan = require('morgan');
 const app = express();
-const config = require('./config')
-const User = require('./userModel')
-const Room = require('./roomModel')
-const jwt = require('jsonwebtoken')
-const bodyParser = require('body-parser')
-const request = require('superagent');
+const config = require('./config');
+const User = require('./userModel');
+const Room = require('./roomModel');
+const jwt = require('jsonwebtoken');
+const bodyParser = require('body-parser');
+const Zomato = require('zomato.js');
+const zom = new Zomato('b3549408bdd1a9da0380f2f2aaf4efa6');
+//const request = require('superagent');
 
 
 const CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -42,9 +44,22 @@ generateId = (cb) => {
   })
 }
 
-app.get('/room', (req, res) => {
-  res.json ({no: 'hi'})
+//zomatoTest?
+zomatoCall = (lat, lng) => {
+  zom.categories()
+  .then(function(data) {
+    console.log(data);
+  })
+  .catch(function(err) {
+    console.error(err);
+  })
+};
+
+app.get('/', (req, res) => {
+  zomatoCall(43,-113);
+  res.json({tests: 'berge' })
 })
+
 
 //creating a room in the db,
 app.post('/room', (req, res) => {
