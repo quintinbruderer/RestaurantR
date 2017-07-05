@@ -71,6 +71,7 @@ app.put('/zomato', (req, res) => {
   Room.findOne({roomCode: roomCode}, (err, room) => {
     zomatoCall(room.roomLocation.lat, room.roomLocation.lng, (err, restNameArr) =>{
       room.roomList = restNameArr
+      room.roomGuests.restChoices = restNameArr
       room.save((err, response) => {
         res.json(restNameArr)
       })
@@ -120,7 +121,8 @@ app.put('/room', (req, res) => {
     console.log("CONSOLE LOG " , room)
     room.roomGuests = room.roomGuests.concat({
                     username: username,
-                    restChoices: []
+                    restChoices: [],
+                    restResults: []
                   })
     room.save((err, result) => {
       if (err){
