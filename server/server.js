@@ -70,9 +70,12 @@ app.put('/zomato', (req, res) => {
   const {roomCode, lat, lng} = req.body
   Room.findOne({roomCode: roomCode}, (err, room) => {
     zomatoCall(room.roomLocation.lat, room.roomLocation.lng, (err, restNameArr) =>{
-      room.roomList = restNameArr
-      room.roomGuests.restChoices = restNameArr
+      room.roomList = restNameArr;
+      const guests = room.toObject().roomGuests.slice()
+      guests[0].restChoices = guests[0].restChoices.concat(restNameArr)
+      room.roomGuests = guests;
       room.save((err, response) => {
+        console.log(err, response)
         res.json(restNameArr)
       })
     });
