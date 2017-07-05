@@ -46,7 +46,10 @@ generateId = (cb) => {
 
 //zomatoTest?
 zomatoCall = (lat, lng) => {
-  zom.categories()
+  zom.search({
+    lat: lat,
+    lon: lng
+  })
   .then(function(data) {
     console.log(data);
   })
@@ -55,11 +58,15 @@ zomatoCall = (lat, lng) => {
   })
 };
 
-app.get('/', (req, res) => {
-  zomatoCall(43,-113);
+app.put('/zomato', (req, res) => {
+  const{roomCode, lat, lng} = req.body
+  Room.findOne({roomCode: roomCode}, (err, room) => {
+    console.log("LAWGS ", room)
+  zomatoCall(room.roomLocation.lat, room.roomLocation.lng);
+  console.log("MO LAGS ", room.roomLocation.lat, room.roomLocation.lng)
   res.json({tests: 'berge' })
+  })
 })
-
 
 //creating a room in the db,
 app.post('/room', (req, res) => {
@@ -126,44 +133,7 @@ app.put('/setStatus', (req, res) => {
   })
 })
 
-// app.put('/zomatoCall', (req, res) => {
-// //fetch here?
-//   const {roomCode, roomList} = req.body
-//   Room.findOne({roomCode: roomCode}, (err, room) => {
-//     fetch(`https://developers.zomato.com/api/v2.1/search?lat=${room.roomLocation.lat}&lon=${room.roomLocation.lng}`, {
-//       //method: 'GET',
-//       headers: {
-//         'Accept': 'application/json',
-//         'user-key': 'b3549408bdd1a9da0380f2f2aaf4efa6'
-//       }
-//     })
-//     .then((response) => response.json())
-//     .then((responseJSON) => {
-//         console.log(responseJson);
-//
-//         //room room list add stuff
-//       })
-//   })
-// })
-let url = `https://developers.zomato.com/api/v2.1/search?lat=42&lon=-112`;
 
-app.get('/ApiTest', (req, res) => {
-  request
-  .get(url)
-  //.send({ name: 'Manny', species: 'cat' })
-  .set('user-key', 'b3549408bdd1a9da0380f2f2aaf4efa6')
-  .set('Accept', 'application/json')
-  .end(function(err, res){
-      if (err || !res.ok) {
-        console.log('Oh no! error');
-      } else {
-        console.log('yay got ' + JSON.stringify(res.body));
-      }
-    });
-    res.json({success: true})
-})
-//   Room.findOneandUpdate({})
-// })
 
 app.post('/vote', (req, res) => {
   const {restaurant, approve, name, roomCode} = req.body
