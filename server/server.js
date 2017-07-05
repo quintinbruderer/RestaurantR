@@ -45,28 +45,41 @@ generateId = (cb) => {
 }
 
 //zomatoTest?
-zomatoCall = (lat, lng) => {
+zomatoCall = (lat, lng, cb) => {
   zom.search({
     lat: lat,
     lon: lng
   })
-  .then(function(data) {
-    console.log(data);
+  // .then(function(data) {
+  //   console.log(data);
+  // })
+  // .then((response) => { console.log("RESPONE ", response)
+  //    response.json()
+  // })
+
+  .then((response) =>{
+    const restNameArr = response.map((obj)=> obj.name)
+    cb(null, restNameArr)
   })
   .catch(function(err) {
-    console.error(err);
+    cb(err, null)
   })
 };
 
 app.put('/zomato', (req, res) => {
-  const{roomCode, lat, lng} = req.body
+  const {roomCode, lat, lng} = req.body
   Room.findOne({roomCode: roomCode}, (err, room) => {
-    console.log("LAWGS ", room)
-  zomatoCall(room.roomLocation.lat, room.roomLocation.lng);
-  console.log("MO LAGS ", room.roomLocation.lat, room.roomLocation.lng)
-  res.json({tests: 'berge' })
+    zomatoCall(room.roomLocation.lat, room.roomLocation.lng, (err, restNameArr) =>{
+      room.roomList = restNameArr
+      room.save((err, response) => {
+        res.json(restNameArr)
+      })
+    });
   })
 })
+
+
+
 
 //creating a room in the db,
 app.post('/room', (req, res) => {
@@ -81,7 +94,8 @@ app.post('/room', (req, res) => {
        ready: false,
        roomGuests:[ {
                     username: username,
-                    restChoices: []
+                    restChoices: [],
+                    restResults: []
                   }],
 
        roomLocation: {lat, lng},//
