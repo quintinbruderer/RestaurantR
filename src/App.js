@@ -32,15 +32,21 @@ class App extends Component {
       <div className="App">
         <div className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React</h2>
+          <h2>Restaurantr</h2>
         </div>
         <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+          username field, roomcode field, startroom button, joinroom button
+            </p>
         <div>
           {location === undefined ? 'Loading location' :
            location ? 'The location is ' + location.lat + ', ' + location.lng : 'No Location found'}
         </div>
+          <div>
+            <p2>now it needs to make a different lobby page with a ready and start button
+            then a game page with an updating list of result a user can say yes or no to
+            that sends those reslults live to the database, then a results page that stops the
+            game page and displays a result</p2>
+          </div>
       </div>
     );
   }

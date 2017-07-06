@@ -71,7 +71,7 @@ app.put('/zomato', (req, res) => {
   Room.findOne({roomCode: roomCode}, (err, room) => {
     zomatoCall(room.roomLocation.lat, room.roomLocation.lng, (err, restNameArr) =>{
       room.roomList = restNameArr;
-      const guests = room.toObject().roomGuests.slice()
+      const guests = room.roomGuests.slice()
       guests[0].restChoices = guests[0].restChoices.concat(restNameArr)
       room.roomGuests = guests;
       room.save((err, response) => {
@@ -151,22 +151,39 @@ app.put('/setStatus', (req, res) => {
     })
   })
 })
-
-
-
-app.post('/vote', (req, res) => {
-  const {restaurant, approve, name, roomCode} = req.body
-})
-app.get('/setup', function(req, res){
-
-  const username = new User({
-    name: "",
+//request info to start game
+app.get('/gamestart', (req,res) => {
+  const {roomCode, ready} = req.body
+  Room.findOne({roomCode: roomCode}, (err, room) =>{
+    if (room.ready === true)
+    return roomList //send array to game
   })
+})
 
+//array comparison, set interval to update contiunously?
+app.put('/preferences', (req,res) =>{
+  const {roomCode, username} = req.body
+  Room.findOne({roomCode: roomCode}, (err, room)=>{
+    room.roomGuests.restResults = //array made by username
+  })
 })
-app.get('/room/:code', (req, res) => {
-    const { code } = req.params
-})
+
+
+
+
+// app.post('/vote', (req, res) => {
+//   const {restaurant, approve, name, roomCode} = req.body
+// })
+// app.get('/setup', function(req, res){
+//
+//   const username = new User({
+//     name: "",
+//   })
+//
+// })
+// app.get('/room/:code', (req, res) => {
+//     const { code } = req.params
+// })
 
 app.delete('/room', (req, res) => {
   const { code } = req.body
