@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import logo from './assets/Logo/Restaurantr.svg';
 import './App.css';
 import geolocation from './frontEnd/geolocation';
 
@@ -32,7 +32,6 @@ class App extends Component {
       <div className="App">
         <div className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <h2>Restaurantr</h2>
         </div>
         <p className="App-intro">
           username field, roomcode field, startroom button, joinroom button
@@ -44,7 +43,7 @@ class App extends Component {
           <div>
             <p2>now it needs to make a different lobby page with a ready and start button
             then a game page with an updating list of result a user can say yes or no to
-            that sends those reslults live to the database, then a results page that stops the
+            that sends those results live to the database, then a results page that stops the
             game page and displays a result</p2>
           </div>
       </div>
