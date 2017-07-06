@@ -152,6 +152,8 @@ app.put('/setStatus', (req, res) => {
   })
 })
 //request info to start game
+/*
+
 app.get('/gamestart', (req,res) => {
   const {roomCode, ready} = req.body
   Room.findOne({roomCode: roomCode}, (err, room) =>{
@@ -160,7 +162,11 @@ app.get('/gamestart', (req,res) => {
   })
 })
 
+*/
+
 //array comparison, set interval to update contiunously?
+/*
+
 app.put('/preferences', (req,res) =>{
   const {roomCode, username} = req.body
   Room.findOne({roomCode: roomCode}, (err, room)=>{
@@ -168,7 +174,7 @@ app.put('/preferences', (req,res) =>{
   })
 })
 
-
+*/
 
 
 // app.post('/vote', (req, res) => {
