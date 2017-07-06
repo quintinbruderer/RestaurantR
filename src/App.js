@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import logo from './assets/Logo/Restaurantr.svg';
 import './App.css';
+import HomePage from './frontEnd/homePage'
+import Lobby from './frontEnd/Lobby'
+
 import geolocation from './frontEnd/geolocation';
 
 class App extends Component {
@@ -9,22 +12,13 @@ class App extends Component {
     super(props)
     this.state = {
 
-
-
     }
   }
 
   componentDidMount(){
     geolocation.getGeolocation(location => this.setState({location: location}));
-
-
-
-
+    console.log(HomePage);
   }
-
-
-
-
 
   render() {
     const {location} = this.state
@@ -33,6 +27,9 @@ class App extends Component {
         <div className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
         </div>
+
+        <HomePage />
+
         <p className="App-intro">
           username field, roomcode field, startroom button, joinroom button
             </p>
@@ -46,6 +43,8 @@ class App extends Component {
             that sends those results live to the database, then a results page that stops the
             game page and displays a result</p2>
           </div>
+
+          <Lobby />
       </div>
     );
   }
