@@ -195,7 +195,17 @@ app.get('/result', (req, res) =>{
 })
 
 */
-
+app.put('/gameStart', (req,res) => {
+  const {roomCode} = req.body
+  Room.findOne({roomCode: roomCode}, (err, room) =>{
+      console.log(room.roomList)
+      if (err){
+        res.status(500).json(err)
+      }
+      res.send(room.roomlist)
+       //send array to game, respond with a .then in front end
+ })
+})
 
 
 app.put('/endroom', (req, res) => {
