@@ -152,47 +152,53 @@ app.put('/setStatus', (req, res) => {
   })
 })
 //request info to start game
-/*
 
-app.get('/gamestart', (req,res) => {
-  const {roomCode, ready} = req.body
+/*
+app.get('/gameStart', (req,res) => {
+  const {roomCode, ready} = req.params
   Room.findOne({roomCode: roomCode}, (err, room) =>{
     if (room.ready === true)
-    return roomList //send array to game
+    return roomList
+    console.log(roomList)//send array to game
   })
 })
-
 */
+
 
 //array comparison, set interval to update contiunously?
 /*
-
 app.put('/preferences', (req,res) =>{
   const {roomCode, username} = req.body
   Room.findOne({roomCode: roomCode}, (err, room)=>{
     room.roomGuests.restResults = //array made by username
   })
 })
-
 */
 
+app.get('/result', (req, res) =>{
+  const {roomcode} = req.params
+  Room.findOne({roomCode: roomCode}, (err, room)=>{
+      let commonValues = [];
+      let i, j;
+      let arr1Length = room.roomGuests[0].restResults.length;
+      let arr2Length = room.roomGuests[1].restResults.length;
+      for (i = 0; i < arr1Length; i++) {
+        for (j = 0; j < arr2Length; j++) {
+          if (arr1[i] === arr2[j]) {
+            commonValues.push(arr1[i]);
+          }
+        }
+      }
+      room.roomResults = //array pushed from loop
+  })
+})
 
-// app.post('/vote', (req, res) => {
-//   const {restaurant, approve, name, roomCode} = req.body
-// })
-// app.get('/setup', function(req, res){
-//
-//   const username = new User({
-//     name: "",
-//   })
-//
-// })
-// app.get('/room/:code', (req, res) => {
-//     const { code } = req.params
-// })
+
+
 
 app.delete('/room', (req, res) => {
-  const { code } = req.body
+  const {roomCode} = req.body
+  //delete collection with roomCode: roomCode from mongo
 })
 
 app.listen(port)
