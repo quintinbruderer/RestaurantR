@@ -119,9 +119,10 @@ app.post('/room', (req, res) => {
 
 app.put('/room', (req, res) => {
   const {roomCode, username} = req.body
+  console.log('req from joinTheParty' , req.body);
   // this currently allows duplicate names, maybe fix that
   Room.findOne({roomCode: roomCode}, (err, room) => {
-    console.log("CONSOLE LOG " , room)
+    console.log('a log')
     room.roomGuests = room.roomGuests.concat({
                     username: username,
                     restChoices: [],
@@ -166,15 +167,15 @@ app.get('/gameStart', (req,res) => {
 
 
 //array comparison, set interval to update contiunously?
-
+/*
 app.put('/preferences', (req,res) =>{
   const {roomCode, username} = req.body
   Room.findOne({roomCode: roomCode}, (err, room)=>{
-    room.roomGuests.restResults = //array made by username
+    room.roomGuests.restResults =  5//array made by username
   })
 })
-
-
+*/
+/*
 app.get('/result', (req, res) =>{
   const {roomcode} = req.params
   Room.findOne({roomCode: roomCode}, (err, room)=>{
@@ -193,12 +194,18 @@ app.get('/result', (req, res) =>{
   })
 })
 
+*/
 
 
 
-app.delete('/room', (req, res) => {
-  const {roomCode} = req.body
-  //delete collection with roomCode: roomCode from mongo
+app.put('/endroom', (req, res) => {
+ const {roomCode} = req.body
+ Room.findOneAndRemove({roomCode:roomCode}, (err, room) =>{
+   if (err){
+     res.status(500).json(err)
+   }
+   res.json({success: true})
+ })
 })
 
 app.listen(port)

@@ -8,14 +8,8 @@ export default {
           lat: position.coords.latitude,
           lng: position.coords.longitude
         }
-        
-        fetch('/room', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(location)
-        })
+
+      
         cb(location)
       })
 
