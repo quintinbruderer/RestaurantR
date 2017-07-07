@@ -153,7 +153,7 @@ app.put('/setStatus', (req, res) => {
 })
 //request info to start game
 
-/*
+
 app.get('/gameStart', (req,res) => {
   const {roomCode, ready} = req.params
   Room.findOne({roomCode: roomCode}, (err, room) =>{
@@ -162,18 +162,18 @@ app.get('/gameStart', (req,res) => {
     console.log(roomList)//send array to game
   })
 })
-*/
+
 
 
 //array comparison, set interval to update contiunously?
-/*
+
 app.put('/preferences', (req,res) =>{
   const {roomCode, username} = req.body
   Room.findOne({roomCode: roomCode}, (err, room)=>{
     room.roomGuests.restResults = //array made by username
   })
 })
-*/
+
 
 app.get('/result', (req, res) =>{
   const {roomcode} = req.params
