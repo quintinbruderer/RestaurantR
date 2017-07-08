@@ -29,7 +29,7 @@ class App extends Component {
           </div>
 
           <Route exact path='/' component={HomePage}/>
-          <Route path='/Lobby/:roomCode' component={Lobby}/>
+          <Route path='/lobby/:roomCode' component={Lobby}/>
 
           <p className="App-intro">
             username field, roomcode field, startroom button, joinroom button

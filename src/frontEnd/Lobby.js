@@ -10,24 +10,16 @@ export default class Lobby extends Component {
       roomCode: "",
       //restNameArr: [],
     }
-    //this functions this.skdjalksjga;lksjd = this.slkdjagljd aldkf.bind(this)
-    /*
-    readyAndGo(){
-      fetch('/setStatus', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          roomCode: this.state.roomCode,
-          ready: this.state.ready,
-        })
-      }).then(result => result.json())
-      .then(json => console.log(json))
-    }
-    */
+    this.readyAndGo = this.readyAndGo.bind(this) //still trying to wrap my head around "this"
 
-
+  }
+  readyAndGo(){
+    fetch('/lobby/:roomCode/getUsers', {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(result => result.json()) //this is where we'll change state later
+    .then(json => console.log(json))
   }
 
   render(){

@@ -136,9 +136,10 @@ app.put('/room', (req, res) => {
     })
 
   })
-
   //add user to a room
 })
+
+/*   --------Do we need this one still? ----------
 
 app.put('/setStatus', (req, res) => {
   const {roomCode, ready} = req.body
@@ -152,14 +153,31 @@ app.put('/setStatus', (req, res) => {
     })
   })
 })
+*/
+app.get('/lobby/:roomCode/getUsers', (req, res) => {
+  console.log(req.params);
+  const roomCode = req.params.roomCode;
+  Room.findOne({roomCode: roomCode}, (err, room) => {
+    console.log(room.roomGuests) //is currently undefined
+      if (err){
+        res.status(500).json(err)
+      }
+      res.send(room.roomGuests)
+    }
+  )
+})
+
+
+
+
+
+
 //request info to start game
-
-
 app.get('/gameStart', (req,res) => {
   const {roomCode, ready} = req.params
   Room.findOne({roomCode: roomCode}, (err, room) =>{
     if (room.ready === true)
-    return roomList
+    return roomList //would this be res.send?
     console.log(roomList)//send array to game
   })
 })
@@ -204,6 +222,7 @@ app.put('/gameStart', (req,res) => {
       }
       res.send(room.roomlist)
        //send array to game, respond with a .then in front end
+   // YESSIR. Should this only be a get? We aren't updating the database. *.*
  })
 })
 
