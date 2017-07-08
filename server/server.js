@@ -167,18 +167,7 @@ app.get('/result', (req, res) =>{
 })
 
 */
-<<<<<<< HEAD
 
-
-app.put('/endroom', (req, res) => {
-  const {roomCode} = req.body
-  Room.findOneAndRemove({roomCode:roomCode}, (err, room) =>{
-    if (err){
-      res.status(500).json(err)
-    }
-    res.json({success: true})
-  })
-=======
 app.put('/gameStart', (req,res) => {
   const {roomCode} = req.body
   Room.findOne({roomCode: roomCode}, (err, room) =>{
@@ -200,7 +189,6 @@ app.put('/endroom', (req, res) => {
    }
    res.json({success: true})
  })
->>>>>>> cddc3b6651b45708e8dd50c3f8d903862c70a604
 })
 
 
