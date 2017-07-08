@@ -4,7 +4,6 @@ const guest = mongoose.Schema()
 
 const room = mongoose.Schema({
   roomCode: String,
-  ready: Boolean,
   roomGuests:Array,
       //username
       //restChoices []
