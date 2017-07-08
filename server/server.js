@@ -9,9 +9,6 @@ const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
 const Zomato = require('zomato.js');
 const zom = new Zomato('b3549408bdd1a9da0380f2f2aaf4efa6');
-//const request = require('superagent');
-
-
 const CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 const port = process.env.PORT || 3001;
@@ -44,19 +41,12 @@ generateId = (cb) => {
   })
 }
 
-//zomatoTest?
+
 zomatoCall = (lat, lng, cb) => {
   zom.search({
     lat: lat,
     lon: lng
   })
-  // .then(function(data) {
-  //   console.log(data);
-  // })
-  // .then((response) => { console.log("RESPONE ", response)
-  //    response.json()
-  // })
-
   .then((response) =>{
     const restNameArr = response.map((obj)=> obj.name)
     cb(null, restNameArr)
@@ -66,6 +56,7 @@ zomatoCall = (lat, lng, cb) => {
   })
 };
 
+//zomato call
 app.put('/zomato', (req, res) => {
   const {roomCode, lat, lng} = req.body
   Room.findOne({roomCode: roomCode}, (err, room) => {
@@ -82,17 +73,11 @@ app.put('/zomato', (req, res) => {
   })
 })
 
-
-
-
 //creating a room in the db,
 app.post('/room', (req, res) => {
   const {lat, lng, username} = req.body
-  console.log("LOGs ", req.body)
-  //room name generator as middleware
     //room name generator
    generateId((roomCode)=>{
-     console.log("Where are we going to dinner" + username + "/w" + roomCode)
      let room = new Room({
        roomCode: roomCode,
        ready: false,
@@ -107,21 +92,17 @@ app.post('/room', (req, res) => {
        roomResult: {},
 
      })
-       console.log("COONSOOL LAWG" , username)
-     room.save((err, room) => {
-       res.json({
-         roomCode : roomCode
-       })
+      room.save((err, room) => {
+       res.json({roomCode : roomCode})
      });
    })
 })
 
-
+//add user to the room
 app.put('/room', (req, res) => {
   const {roomCode, username} = req.body
   // this currently allows duplicate names, maybe fix that
   Room.findOne({roomCode: roomCode}, (err, room) => {
-    console.log("CONSOLE LOG " , room)
     room.roomGuests = room.roomGuests.concat({
                     username: username,
                     restChoices: [],
@@ -133,33 +114,17 @@ app.put('/room', (req, res) => {
       }
       res.json({room, result})
     })
-
   })
-
-  //add user to a room
 })
 
-app.put('/setStatus', (req, res) => {
-  const {roomCode, ready} = req.body
-  Room.findOne({roomCode: roomCode}, (err, room) => {
-    room.ready = true;
-    room.save((err, result) => {
+//send array to the game
+app.put('/gameStart', (req,res) => {
+  const {roomCode} = req.body
+  Room.findOne({roomCode: roomCode}, (err, room) =>{
       if (err){
         res.status(500).json(err)
       }
-      res.json({room, result})
-    })
-  })
-})
-//request info to start game
-
-
-app.get('/gameStart', (req,res) => {
-  const {roomCode, ready} = req.params
-  Room.findOne({roomCode: roomCode}, (err, room) =>{
-    if (room.ready === true)
-    return roomList
-    console.log(roomList)//send array to game
+      res.send(room.roomlist)
   })
 })
 
@@ -167,14 +132,15 @@ app.get('/gameStart', (req,res) => {
 
 //array comparison, set interval to update contiunously?
 
+/*
 app.put('/preferences', (req,res) =>{
-  const {roomCode, username} = req.body
+  const {roomCode} = req.body
   Room.findOne({roomCode: roomCode}, (err, room)=>{
-    room.roomGuests.restResults = //array made by username
+    room.roomGuests.restResults =  //array made by username
   })
 })
 
-
+/*
 app.get('/result', (req, res) =>{
   const {roomcode} = req.params
   Room.findOne({roomCode: roomCode}, (err, room)=>{
@@ -193,13 +159,20 @@ app.get('/result', (req, res) =>{
   })
 })
 
+*/
 
 
-
-app.delete('/room', (req, res) => {
+app.put('/endroom', (req, res) => {
   const {roomCode} = req.body
-  //delete collection with roomCode: roomCode from mongo
+  Room.findOneAndRemove({roomCode:roomCode}, (err, room) =>{
+    if (err){
+      res.status(500).json(err)
+    }
+    res.json({success: true})
+  })
 })
+
+
 
 app.listen(port)
 console.log("The server is working on Port " + port)
