@@ -90,7 +90,6 @@ app.post('/room', (req, res) => {
        roomLocation: {lat, lng},//
        roomList: [],
        roomResult: {},
-
      })
       room.save((err, room) => {
        res.json({roomCode : roomCode})
@@ -101,6 +100,7 @@ app.post('/room', (req, res) => {
 //add user to the room
 app.put('/room', (req, res) => {
   const {roomCode, username} = req.body
+  console.log('req from joinTheParty' , req.body);
   // this currently allows duplicate names, maybe fix that
   Room.findOne({roomCode: roomCode}, (err, room) => {
     room.roomGuests = room.roomGuests.concat({
@@ -136,10 +136,17 @@ app.put('/gameStart', (req,res) => {
 app.put('/preferences', (req,res) =>{
   const {roomCode} = req.body
   Room.findOne({roomCode: roomCode}, (err, room)=>{
+<<<<<<< HEAD
     room.roomGuests.restResults =  //array made by username
   })
 })
 
+=======
+    room.roomGuests.restResults =  5//array made by username
+  })
+})
+*/
+>>>>>>> cddc3b6651b45708e8dd50c3f8d903862c70a604
 /*
 app.get('/result', (req, res) =>{
   const {roomcode} = req.params
@@ -160,6 +167,7 @@ app.get('/result', (req, res) =>{
 })
 
 */
+<<<<<<< HEAD
 
 
 app.put('/endroom', (req, res) => {
@@ -170,6 +178,29 @@ app.put('/endroom', (req, res) => {
     }
     res.json({success: true})
   })
+=======
+app.put('/gameStart', (req,res) => {
+  const {roomCode} = req.body
+  Room.findOne({roomCode: roomCode}, (err, room) =>{
+      console.log(room.roomList)
+      if (err){
+        res.status(500).json(err)
+      }
+      res.send(room.roomlist)
+       //send array to game, respond with a .then in front end
+ })
+})
+
+
+app.put('/endroom', (req, res) => {
+ const {roomCode} = req.body
+ Room.findOneAndRemove({roomCode:roomCode}, (err, room) =>{
+   if (err){
+     res.status(500).json(err)
+   }
+   res.json({success: true})
+ })
+>>>>>>> cddc3b6651b45708e8dd50c3f8d903862c70a604
 })
 
 
