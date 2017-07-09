@@ -17,7 +17,7 @@ export default class Lobby extends Component {
 
 
   getList() {
-    fetch({'/lobby/' + this.state.roomCode + '/' + this.state.username}, {
+    fetch('/lobby/' + this.state.roomCode + '/' + this.state.username, {
       headers: {
         'Content-Type': 'application/json'
       }
