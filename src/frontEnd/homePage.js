@@ -35,7 +35,8 @@ export default class HomePage extends Component {
                             lng: this.state.lng})
     }).then(result => result.json())
       .then(json => {
-        this.setState({roomCode: json.roomCode})
+        this.setState({roomCode: json.roomCode,
+                       initialize: true})
     })
   }
 
@@ -52,7 +53,7 @@ export default class HomePage extends Component {
 
   render() {
     if (this.state.initialize) {
-      return <Redirect push to={'/Lobby/' + this.state.roomCode}/>
+      return <Redirect push to={'/lobby/' + this.state.roomCode + '/' + this.state.username}/>
     } else {
       return (
         <span>

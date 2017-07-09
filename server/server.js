@@ -56,22 +56,7 @@ zomatoCall = (lat, lng, cb) => {
   })
 };
 
-//zomato call
-app.put('/zomato', (req, res) => {
-  const {roomCode, lat, lng} = req.body
-  Room.findOne({roomCode: roomCode}, (err, room) => {
-    zomatoCall(room.roomLocation.lat, room.roomLocation.lng, (err, restNameArr) =>{
-      room.roomList = restNameArr;
-      const guests = room.roomGuests.slice()
-      guests[0].restChoices = guests[0].restChoices.concat(restNameArr)
-      room.roomGuests = guests;
-      room.save((err, response) => {
-        console.log(err, response)
-        res.json(restNameArr)
-      })
-    });
-  })
-})
+
 
 //creating a room in the db,
 app.post('/room', (req, res) => {
@@ -133,8 +118,9 @@ app.put('/setStatus', (req, res) => {
   })
 })
 */
-app.get('/lobby/:roomCode/getUsers', (req, res) => {
-  console.log(req.params);
+
+
+app.get('/lobby/:roomCode/:username', (req, res) => {
   const roomCode = req.params.roomCode;
   Room.findOne({roomCode: roomCode}, (err, room) => {
     console.log(room.roomGuests) //is currently undefined
@@ -142,11 +128,27 @@ app.get('/lobby/:roomCode/getUsers', (req, res) => {
         res.status(500).json(err)
       }
       res.send(room.roomGuests)
+      //res.json({roomGuests: room.roomGuests})
     }
   )
 })
 
-
+//zomato call
+app.put('/zomato', (req, res) => {
+  const {roomCode, lat, lng} = req.body
+  Room.findOne({roomCode: roomCode}, (err, room) => {
+    zomatoCall(room.roomLocation.lat, room.roomLocation.lng, (err, restNameArr) =>{
+      room.roomList = restNameArr;
+      const guests = room.roomGuests.slice()
+      guests[0].restChoices = guests[0].restChoices.concat(restNameArr)
+      room.roomGuests = guests;
+      room.save((err, response) => {
+        console.log(err, response)
+        res.json(restNameArr)
+      })
+    });
+  })
+})
 
 
 
@@ -176,26 +178,25 @@ app.put('/preferences', (req,res) =>{
 })
 
 */
-/*
-app.get('/result', (req, res) =>{
-  const {roomcode} = req.params
-  Room.findOne({roomCode: roomCode}, (err, room)=>{
-      let commonValues = [];
-      let i, j;
-      let arr1Length = room.roomGuests[0].restResults.length;
-      let arr2Length = room.roomGuests[1].restResults.length;
-      for (i = 0; i < arr1Length; i++) {
-        for (j = 0; j < arr2Length; j++) {
-          if (arr1[i] === arr2[j]) {
-            commonValues.push(arr1[i]);
-          }
-        }
-      }
-      room.roomResults = //array pushed from loop
-  })
-})
 
-*/
+app.put('/result', (req, res) =>{
+ const {roomCode} = req.body
+ Room.findOne({roomCode: roomCode}, (err, room)=>{
+     let commonValues = [];
+     let i, j;
+     let arr1Length = room.roomGuests[0].restResults.length;
+     let arr2Length = room.roomGuests[1].restResults.length;
+     for (i = 0; i < arr1Length; i++) {
+       for (j = 0; j < arr2Length; j++) {
+         if (room.roomGuests[0].restResults[i] === room.roomGuests[1].restResults[j]) {
+           commonValues.push(room.roomGuests[0].restResults[i]);
+         }
+       }
+     }
+     res.send(commonValues)
+     console.log("OK RAUNTS ", commonValues)
+ })
+})
 
 app.put('/gameStart', (req,res) => {
   const {roomCode} = req.body

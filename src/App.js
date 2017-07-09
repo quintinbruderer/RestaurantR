@@ -4,6 +4,7 @@ import logo from './assets/Logo/Restaurantr.svg';
 import './App.css';
 import HomePage from './frontEnd/homePage'
 import Lobby from './frontEnd/Lobby'
+import Games from './frontEnd/Games'
 
 import geolocation from './frontEnd/geolocation';
 
@@ -29,7 +30,8 @@ class App extends Component {
           </div>
 
           <Route exact path='/' component={HomePage}/>
-          <Route path='/lobby/:roomCode' component={Lobby}/>
+          <Route path='/lobby/:roomCode/:username' component={Lobby}/>
+          <Route path='/games/:roomCode/:username' component={Games}/>
 
           <p className="App-intro">
             username field, roomcode field, startroom button, joinroom button
