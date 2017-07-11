@@ -33,9 +33,9 @@ class App extends Component {
           <Route exact path='/' component={HomePage}/>
           <Route path='/Lobby/:roomCode/:username' component={Lobby}/>
           <Route path='/Games/:roomCode/:username' component={Games}/>
-          <Route path='/Waiting/:roomCode' component = {Waiting}/>
+          <Route path='/Waiting/:roomCode/:username' component = {Waiting}/>
 
-          
+
           <div>
             {location === undefined
               ? 'Loading location'

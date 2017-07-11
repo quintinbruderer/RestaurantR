@@ -73,6 +73,7 @@ app.post('/room', (req, res) => {
        ready: false,
        roomGuests:[ {
                     username: username,
+                    gameDone: false,
                   }],
        roomLocation: {lat, lng},//
        roomList: [],
@@ -91,7 +92,8 @@ app.put('/room', (req, res) => {
   // this currently allows duplicate names, maybe fix that
   Room.findOne({roomCode: roomCode}, (err, room) => {
     room.roomGuests = room.roomGuests.concat({
-                    username: username
+                    username: username,
+                    gameDone: false
                   })
     room.save((err, result) => {
       if (err){
@@ -152,17 +154,34 @@ app.put('/preferences', (req,res) =>{
   Room.findOne({roomCode: roomCode}, (err, room)=>{
         const roomRes = room.restResults.slice();
         room.restResults = roomRes.concat(chosen);
-        console.log("LAWFG ", room.restResults)
-
         room.save((err, result) => {
-          (console.log('haaa-aaayy ', result.roomGuests[0].restResults))
           if (err){
           res.status(500).json(err)
           }
           res.json({room, result})
-          //this is working, only works for 1 user, also, BUT it doesnt save to db
-          //copy array, slice, assign to copy, the odd bug
         })
+  })
+})
+app.put('/gameDone', (req, res) =>{
+  const {roomCode, username} = req.body
+  console.log("LAWGF ", roomCode, username)
+  Room.findOne({roomCode: roomCode}, (err, room)=>{
+    console.log("LOG ", err)
+    const guests = room.roomGuests;
+    console.log("guests ", guests)
+    for(let i = 0; i < guests.length; i++){
+      if(guests[i].username === username){
+        guests[i].gameDone = true;
+      }
+    }
+    room.markModified('roomGuests')
+    console.log('what the flip',room.roomGuests)
+    room.save((err, result) => {
+      if(err){
+      res.status(500).json(err)
+      }
+      res.json({room, result})
+    })
   })
 })
 

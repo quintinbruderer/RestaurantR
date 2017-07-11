@@ -18,6 +18,7 @@ export default class Games extends Component {
     this.createList = this.createList.bind(this)
     this.makeChosenArr = this.makeChosenArr.bind(this)
     this.sendResults = this.sendResults.bind(this)
+    this.gameDone = this.gameDone.bind(this)
   }
 
 
@@ -59,6 +60,22 @@ export default class Games extends Component {
       console.log("choices ", choices)
   }
 
+  gameDone(){
+    var roomCode = this.state.roomCode;
+    var username = this.state.username;
+    console.log("MOAR LOG ", roomCode, username)
+    fetch('/gameDone',{
+      method: 'PUT',
+      headers: {
+        'Content-Type' : 'application/json'
+      },
+      body: JSON.stringify({roomCode: roomCode,
+                            username: username})
+
+    }).then(result => result.json())
+  }
+
+
   sendResults(){
     fetch('/preferences',{
       method: 'PUT',
@@ -68,7 +85,9 @@ export default class Games extends Component {
       body: JSON.stringify({roomCode: this.state.roomCode,
                            chosen: this.state.chosen})
     }).then(result => result.json())
+      .then(this.gameDone())
       .then(this.setState({initialize3: true}))
+
   }
 
 
@@ -76,7 +95,8 @@ export default class Games extends Component {
   render() {
     if(this.state.initialize3){
       return (
-          <Redirect push to={'/Waiting/' + this.state.roomCode}/>
+
+          <Redirect push to={'/Waiting/' + this.state.roomCode + '/' + this.state.username}/>
       )
     }else{
       return(

@@ -7,10 +7,15 @@ export default class Waiting extends Component {
     super(props)
     this.state = {
       roomCode: this.props.match.params.roomCode,
+      username: this.props.match.params.username
     }
   }
+
+  
+
+
 //set interval checking to see if restaurant has been found, then
-//redirect to chosen restaurant page 
+//redirect to chosen restaurant page
 
       render(){
 
