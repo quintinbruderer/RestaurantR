@@ -10,12 +10,14 @@ const bodyParser = require('body-parser');
 const Zomato = require('zomato.js');
 const zom = new Zomato('b3549408bdd1a9da0380f2f2aaf4efa6');
 const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+const path = require('path')
 //removed 1234567890 from CHARS to make easier codes 0 and 0 are annoying and switching to
 //numbers on a phone is time consuming (at least on a app-using level)
 const port = process.env.PORT || 3001;
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
+
 //we can add middleware(?) later in here. Morgan will be a help.
 
 mongoose.connect(config.database)
@@ -29,7 +31,6 @@ const randomString = (length) => {
     }
     return result;
 }
-
 generateId = (cb) => {
   const roomID = randomString(4);
   Room.findOne({roomCode: roomID}, (err, room) => {
@@ -55,6 +56,12 @@ zomatoCall = (lat, lng, cb) => {
     cb(err, null)
   })
 };
+
+app.use(express.static(path.join(__dirname,'..','build')))
+
+
+
+
 
 //creating a room in the db,
 app.post('/room', (req, res) => {
@@ -188,6 +195,11 @@ app.put('/endroom', (req, res) => {
    res.json({success: true})
  })
 })
+
+app.get('/*', function (req, res) {
+  res.sendFile(path.join(__dirname, '..', 'build', 'index.html'));
+});
+
 
 app.listen(port)
 console.log("The server is working on Port " + port)

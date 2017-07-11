@@ -39,9 +39,6 @@
     "url": "git+https://github.com/quintinbruderer/RestaurantR.git"
   },
   "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/quintinbruderer/RestaurantR/issues"
-  },
-  "homepage": "https://github.com/quintinbruderer/RestaurantR#readme"
+  "license": "ISC"
+
 }
