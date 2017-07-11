@@ -6,7 +6,7 @@ const room = mongoose.Schema({
   roomCode: String,
   roomGuests:Array,
       //username
-      //done: false boolean
+      //gameDone: false boolean
   //roomSize: roomGuests.length
   roomLocation: {lat: Number,
                  lng: Number},

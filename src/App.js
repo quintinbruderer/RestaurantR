@@ -6,7 +6,7 @@ import HomePage from './frontEnd/homePage'
 import Lobby from './frontEnd/Lobby'
 import Games from './frontEnd/Games'
 import Waiting from './frontEnd/Waiting'
-
+import Results from './frontEnd/Results'
 import geolocation from './frontEnd/geolocation';
 
 class App extends Component {
@@ -34,7 +34,7 @@ class App extends Component {
           <Route path='/Lobby/:roomCode/:username' component={Lobby}/>
           <Route path='/Games/:roomCode/:username' component={Games}/>
           <Route path='/Waiting/:roomCode/:username' component = {Waiting}/>
-
+          <Route path='/Results/:roomCode' component = {Results}/>
 
           <div>
             {location === undefined

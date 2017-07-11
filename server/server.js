@@ -185,25 +185,79 @@ app.put('/gameDone', (req, res) =>{
   })
 })
 
-app.put('/result', (req, res) =>{
+// app.put('/result', (req, res) =>{
+//   const {roomCode} = req.body
+//   Room.findOne({roomCode: roomCode}, (err, room)=>{
+//       let commonValues = [];
+//       let i, j;
+//       let arr1Length = room.roomGuests[0].restResults.length;
+//       let arr2Length = room.roomGuests[1].restResults.length;
+//       for (i = 0; i < arr1Length; i++) {
+//         for (j = 0; j < arr2Length; j++) {
+//           if (room.roomGuests[0].restResults[i] === room.roomGuests[1].restResults[j]) {
+//             commonValues.push(room.roomGuests[0].restResults[i]);
+//           }
+//         }
+//       }
+//       res.send(commonValues)
+//       console.log("OK RAUNTS ", commonValues)
+//       //currently only compares 2 users
+//   })
+// })
+
+app.put('/genie', (req, res) =>{
   const {roomCode} = req.body
-  Room.findOne({roomCode: roomCode}, (err, room)=>{
-      let commonValues = [];
-      let i, j;
-      let arr1Length = room.roomGuests[0].restResults.length;
-      let arr2Length = room.roomGuests[1].restResults.length;
-      for (i = 0; i < arr1Length; i++) {
-        for (j = 0; j < arr2Length; j++) {
-          if (room.roomGuests[0].restResults[i] === room.roomGuests[1].restResults[j]) {
-            commonValues.push(room.roomGuests[0].restResults[i]);
+  Room.findOne({roomCode: roomCode}, (err, room) =>{
+        let guests = room.roomGuests
+        let good2go = guests.every((userObj)=>{
+          console.log("userObj ", userObj)
+          return userObj.gameDone === true;
+        })
+        console.log("good2go ", good2go)
+        if(good2go){
+          let results = room.restResults
+          console.log("room.restResults ", room.restResults)
+          let countedResults = results.reduce((allResults, result) => {
+            console.log("allResults ", allResults, result)
+            if (result in allResults){
+              allResults[result]++;
+            }
+            else {
+              allResults[result]= 1;
+            }
+            console.log("allResults ", allResults)
+
+            return allResults;
+
+          }, {})
+          const maxKey = (obj) => {
+            let maxScore = 0;
+            let choice = "";
+            Object.keys(obj).forEach(key =>{
+              if (obj[key] > maxScore){
+                //ties go to first restaurant in loop
+                maxScore = obj[key];
+                choice = key;
+              }
+            })
+            return choice
           }
+          console.log("WE EATIN AT ", maxKey(countedResults))
+          res.json({result:  maxKey(countedResults)})
+        } else {
+          res.json({result: "hunger"})
         }
-      }
-      res.send(commonValues)
-      console.log("OK RAUNTS ", commonValues)
-      //currently only compares 2 users
+      })
   })
-})
+  // console.log("allResults ", allResults)
+  // let obj= allResults;
+  //   }, {})
+  // let arr = Object.values(obj);
+  // let max = math.max(...arr);
+  // return max
+  // room.roomResults = max
+  // console.log("WE EATIN AT ", max)
+  // }
 
 app.put('/endroom', (req, res) => {
  const {roomCode} = req.body
