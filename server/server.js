@@ -9,8 +9,9 @@ const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
 const Zomato = require('zomato.js');
 const zom = new Zomato('b3549408bdd1a9da0380f2f2aaf4efa6');
-const CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-
+const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+//removed 1234567890 from CHARS to make easier codes 0 and 0 are annoying and switching to
+//numbers on a phone is time consuming (at least on a app-using level)
 const port = process.env.PORT || 3001;
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: true}))
@@ -41,7 +42,6 @@ generateId = (cb) => {
   })
 }
 
-
 zomatoCall = (lat, lng, cb) => {
   zom.search({
     lat: lat,
@@ -56,8 +56,6 @@ zomatoCall = (lat, lng, cb) => {
   })
 };
 
-
-
 //creating a room in the db,
 app.post('/room', (req, res) => {
   const {lat, lng, username} = req.body
@@ -68,10 +66,7 @@ app.post('/room', (req, res) => {
        ready: false,
        roomGuests:[ {
                     username: username,
-                    restChoices: [],
-                    restResults: []
                   }],
-
        roomLocation: {lat, lng},//
        roomList: [],
        roomResult: {},
@@ -89,9 +84,7 @@ app.put('/room', (req, res) => {
   // this currently allows duplicate names, maybe fix that
   Room.findOne({roomCode: roomCode}, (err, room) => {
     room.roomGuests = room.roomGuests.concat({
-                    username: username,
-                    restChoices: [],
-                    restResults: []
+                    username: username
                   })
     room.save((err, result) => {
       if (err){
@@ -102,23 +95,6 @@ app.put('/room', (req, res) => {
   })
   //add user to a room
 })
-
-/*   --------Do we need this one still? ----------
-
-app.put('/setStatus', (req, res) => {
-  const {roomCode, ready} = req.body
-  Room.findOne({roomCode: roomCode}, (err, room) => {
-    room.ready = true;
-    room.save((err, result) => {
-      if (err){
-        res.status(500).json(err)
-      }
-      res.json({room, result})
-    })
-  })
-})
-*/
-
 
 app.get('/lobby/:roomCode/:username', (req, res) => {
   const roomCode = req.params.roomCode;
@@ -139,20 +115,18 @@ app.put('/zomato', (req, res) => {
   Room.findOne({roomCode: roomCode}, (err, room) => {
     zomatoCall(room.roomLocation.lat, room.roomLocation.lng, (err, restNameArr) =>{
       room.roomList = restNameArr;
-      const guests = room.roomGuests.slice()
-      guests[0].restChoices = guests[0].restChoices.concat(restNameArr)
-      room.roomGuests = guests;
+    //hard bit with the odd bug, now might not need it
+    //  const guests = room.roomGuests.slice()
+    //  guests[0].restChoices = guests[0].restChoices.concat(restNameArr)
+    //  room.roomGuests = guests;
       room.save((err, response) => {
         console.log(err, response)
+        console.log(restNameArr)
         res.json(restNameArr)
       })
     });
   })
 })
-
-
-
-
 
 //send array to the game
 app.put('/gameStart', (req,res) => {
@@ -161,56 +135,49 @@ app.put('/gameStart', (req,res) => {
       if (err){
         res.status(500).json(err)
       }
-      res.send(room.roomlist)
+      res.json(room)
   })
 })
 
-
-
-//array comparison, set interval to update contiunously?
-
-/*
+//send user generated arrays back to the database
 app.put('/preferences', (req,res) =>{
-  const {roomCode} = req.body
+  const {roomCode, chosen} = req.body
   Room.findOne({roomCode: roomCode}, (err, room)=>{
-    room.roomGuests.restResults =  //array made by username
+        const roomRes = room.restResults.slice();
+        room.restResults = roomRes.concat(chosen);
+        console.log("LAWFG ", room.restResults)
+
+        room.save((err, result) => {
+          (console.log('haaa-aaayy ', result.roomGuests[0].restResults))
+          if (err){
+          res.status(500).json(err)
+          }
+          res.json({room, result})
+          //this is working, only works for 1 user, also, BUT it doesnt save to db
+          //copy array, slice, assign to copy, the odd bug
+        })
   })
 })
-
-*/
 
 app.put('/result', (req, res) =>{
- const {roomCode} = req.body
- Room.findOne({roomCode: roomCode}, (err, room)=>{
-     let commonValues = [];
-     let i, j;
-     let arr1Length = room.roomGuests[0].restResults.length;
-     let arr2Length = room.roomGuests[1].restResults.length;
-     for (i = 0; i < arr1Length; i++) {
-       for (j = 0; j < arr2Length; j++) {
-         if (room.roomGuests[0].restResults[i] === room.roomGuests[1].restResults[j]) {
-           commonValues.push(room.roomGuests[0].restResults[i]);
-         }
-       }
-     }
-     res.send(commonValues)
-     console.log("OK RAUNTS ", commonValues)
- })
-})
-
-app.put('/gameStart', (req,res) => {
   const {roomCode} = req.body
-  Room.findOne({roomCode: roomCode}, (err, room) =>{
-      console.log(room.roomList)
-      if (err){
-        res.status(500).json(err)
+  Room.findOne({roomCode: roomCode}, (err, room)=>{
+      let commonValues = [];
+      let i, j;
+      let arr1Length = room.roomGuests[0].restResults.length;
+      let arr2Length = room.roomGuests[1].restResults.length;
+      for (i = 0; i < arr1Length; i++) {
+        for (j = 0; j < arr2Length; j++) {
+          if (room.roomGuests[0].restResults[i] === room.roomGuests[1].restResults[j]) {
+            commonValues.push(room.roomGuests[0].restResults[i]);
+          }
+        }
       }
-      res.send(room.roomlist)
-       //send array to game, respond with a .then in front end
-   // YESSIR. Should this only be a get? We aren't updating the database. *.*
- })
+      res.send(commonValues)
+      console.log("OK RAUNTS ", commonValues)
+      //currently only compares 2 users
+  })
 })
-
 
 app.put('/endroom', (req, res) => {
  const {roomCode} = req.body
@@ -221,8 +188,6 @@ app.put('/endroom', (req, res) => {
    res.json({success: true})
  })
 })
-
-
 
 app.listen(port)
 console.log("The server is working on Port " + port)

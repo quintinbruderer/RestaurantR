@@ -1,4 +1,4 @@
 module.exports = {
-    
-    'database' : 'mongodb://localhost:27017/Restaurantr'
+
+    'database' : process.env.MONGODB_URI || 'mongodb://localhost:27017/Restaurantr'
 };

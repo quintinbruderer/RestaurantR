@@ -9,8 +9,9 @@ export default class Lobby extends Component {
     this.state = {
       roomCode: this.props.match.params.roomCode,
       username: this.props.match.params.username,
-      roomGuests: ['I need to store some stuff', 'and more'],
-      initialize2: false
+      roomGuests: ['future spot for guest list'],
+      initialize2: false,
+      roomList: ''
     }
     this.getList = this.getList.bind(this) //still trying to wrap my head around "this"
   }
@@ -21,23 +22,32 @@ export default class Lobby extends Component {
       headers: {
         'Content-Type': 'application/json'
       }
-    }).then(result => {
-      console.log(result)
-    })
+    }).then(result => {})
     // .then(json => {
     //   console.log('json ', json)
     //     this.setState({roomGuests: json.roomGuests})
     // })
-  }
+  }  //trying to display users in room
+  //maybe need a set interval
 
   componentDidMount() {
-    this.getList()
+    fetch('/zomato', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({roomCode: this.state.roomCode,
+              lat: this.state.lat,
+              lng: this.state.lng})
+    }).then(result => result.json())
+    .then(json => console.log(json))
   }
+
 
   render(){
     if(this.state.initialize2){
       return(
-        <Redirect push to={'/games/' + this.state.roomCode + '/' + this.state.username}/>
+        <Redirect push to={'/Games/' + this.state.roomCode + '/' + this.state.username}/>
       )
     } else {
       return(

@@ -8,13 +8,13 @@ export default {
           lat: position.coords.latitude,
           lng: position.coords.longitude
         }
-
-      
         cb(location)
       })
-
     } else {
       return null
     }
   }
 }
+
+
+//this page is done

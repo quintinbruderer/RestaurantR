@@ -47,15 +47,18 @@ export default class HomePage extends Component {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({username: this.state.username, roomCode: this.state.roomCode})
-    }).then(this.setState({initialize: true}))//put a concat here? since we are adding new users onto the existing???
+    }).then(this.setState({initialize: true}))//put a concat here? since we are
+                                              //   adding new users onto the existing???
 
   }
 
   render() {
     if (this.state.initialize) {
-      return <Redirect push to={'/lobby/' + this.state.roomCode + '/' + this.state.username}/>
+      return <Redirect push to={'/Lobby/' + this.state.roomCode + '/' + this.state.username}/>
     } else {
       return (
+        <div>
+        <div>
         <span>
           User Name
             <input type="text" name="User Name" onChange={(e) => this.setState({username: e.target.value})}></input>
@@ -65,6 +68,13 @@ export default class HomePage extends Component {
             <button value="Join Room" onClick ={
               this.joinTheParty}>Join Room</button>
         </span>
+        </div>
+          <div>
+            <p className="App-intro">
+            Please put a username to create a room, or a username and a code to join a room.
+            </p>
+          </div>
+        </div>
       )
     }
   }
