@@ -7,17 +7,13 @@ const room = mongoose.Schema({
   roomGuests:Array,
       //username
       //gameDone: false boolean
-  //roomSize: roomGuests.length
   roomLocation: {lat: Number,
                  lng: Number},
-  roomList: Array,  //master room list. set interval to check individual guest arrays
+  roomList: Array,
   restResults: Array,
-  roomResult: Object
+  roomResult: String
   });
 
 const UserModel = mongoose.model('Room', room);
 
 module.exports = UserModel;
-
-
-//k

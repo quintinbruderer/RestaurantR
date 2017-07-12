@@ -36,6 +36,7 @@ class App extends Component {
           <Route path='/Waiting/:roomCode/:username' component = {Waiting}/>
           <Route path='/Results/:roomCode' component = {Results}/>
 
+
           <div>
             {location === undefined
               ? 'Loading location'

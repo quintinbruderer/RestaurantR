@@ -11,6 +11,7 @@ export default class Waiting extends Component {
       username: this.props.match.params.username,
       initialize4: false
     }
+    this.readyCheck = this.readyCheck.bind(this)
   }
 
   componentDidMount(){
@@ -23,11 +24,27 @@ export default class Waiting extends Component {
     }).then(result => result.json())
   }
 
-//this.setState({initialize4: true})
-
-
+  readyCheck(){
+    fetch('/allReady', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({roomCode: this.state.roomCode})
+    }).then(result => result.json())
+        .then(result => {
+              console.log("LAWGSFDSFD ", result)
+              if (result.result === true) {
+                this.setState({initialize4: true})
+              } else {
+                console.log("NOT YEAT")
+              }
+            }
+        )
+  }
 
   render(){
+    setInterval(this.readyCheck(), 5000)
     if(this.state.initialize4){
       return(
         <Redirect push to={'/Results/' + this.state.roomCode}/>

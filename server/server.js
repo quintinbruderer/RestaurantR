@@ -11,14 +11,11 @@ const Zomato = require('zomato.js');
 const zom = new Zomato('b3549408bdd1a9da0380f2f2aaf4efa6');
 const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 const path = require('path')
-//removed 1234567890 from CHARS to make easier codes 0 and 0 are annoying and switching to
-//numbers on a phone is time consuming (at least on a app-using level)
+
 const port = process.env.PORT || 3001;
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
-
-//we can add middleware(?) later in here. Morgan will be a help.
 
 mongoose.connect(config.database)
 
@@ -59,14 +56,9 @@ zomatoCall = (lat, lng, cb) => {
 
 app.use(express.static(path.join(__dirname,'..','build')))
 
-
-
-
-
 //creating a room in the db,
 app.post('/room', (req, res) => {
   const {lat, lng, username} = req.body
-    //room name generator
    generateId((roomCode)=>{
      let room = new Room({
        roomCode: roomCode,
@@ -77,7 +69,7 @@ app.post('/room', (req, res) => {
                   }],
        roomLocation: {lat, lng},//
        roomList: [],
-       roomResult: {},
+       roomResult: '',
      })
       room.save((err, room) => {
        res.json({roomCode : roomCode})
@@ -89,7 +81,6 @@ app.post('/room', (req, res) => {
 app.put('/room', (req, res) => {
   const {roomCode, username} = req.body
   console.log('req from joinTheParty' , req.body);
-  // this currently allows duplicate names, maybe fix that
   Room.findOne({roomCode: roomCode}, (err, room) => {
     room.roomGuests = room.roomGuests.concat({
                     username: username,
@@ -102,20 +93,17 @@ app.put('/room', (req, res) => {
       res.json({room, result})
     })
   })
-  //add user to a room
 })
 
-app.get('/lobby/:roomCode/:username', (req, res) => {
-  const roomCode = req.params.roomCode;
-  Room.findOne({roomCode: roomCode}, (err, room) => {
-    console.log(room.roomGuests) //is currently undefined
-      if (err){
-        res.status(500).json(err)
-      }
-      res.send(room.roomGuests)
-      //res.json({roomGuests: room.roomGuests})
-    }
-  )
+app.get('/lobby/:roomCode', (req, res) => {
+ const roomCode = req.params.roomCode;
+ Room.findOne({roomCode: roomCode}, (err, room) => {
+     if (err){
+       res.status(500).json(err)
+     }
+     res.json({roomGuests: room.roomGuests})
+   }
+ )
 })
 
 //zomato call
@@ -124,10 +112,6 @@ app.put('/zomato', (req, res) => {
   Room.findOne({roomCode: roomCode}, (err, room) => {
     zomatoCall(room.roomLocation.lat, room.roomLocation.lng, (err, restNameArr) =>{
       room.roomList = restNameArr;
-    //hard bit with the odd bug, now might not need it
-    //  const guests = room.roomGuests.slice()
-    //  guests[0].restChoices = guests[0].restChoices.concat(restNameArr)
-    //  room.roomGuests = guests;
       room.save((err, response) => {
         console.log(err, response)
         console.log(restNameArr)
@@ -162,6 +146,7 @@ app.put('/preferences', (req,res) =>{
         })
   })
 })
+
 app.put('/gameDone', (req, res) =>{
   const {roomCode, username} = req.body
   console.log("LAWGF ", roomCode, username)
@@ -178,32 +163,36 @@ app.put('/gameDone', (req, res) =>{
     console.log('what the flip',room.roomGuests)
     room.save((err, result) => {
       if(err){
-      res.status(500).json(err)
+        res.status(500).json(err)
+      } else {
+        res.json({room, result})
       }
-      res.json({room, result})
     })
   })
 })
 
-// app.put('/result', (req, res) =>{
-//   const {roomCode} = req.body
-//   Room.findOne({roomCode: roomCode}, (err, room)=>{
-//       let commonValues = [];
-//       let i, j;
-//       let arr1Length = room.roomGuests[0].restResults.length;
-//       let arr2Length = room.roomGuests[1].restResults.length;
-//       for (i = 0; i < arr1Length; i++) {
-//         for (j = 0; j < arr2Length; j++) {
-//           if (room.roomGuests[0].restResults[i] === room.roomGuests[1].restResults[j]) {
-//             commonValues.push(room.roomGuests[0].restResults[i]);
-//           }
-//         }
-//       }
-//       res.send(commonValues)
-//       console.log("OK RAUNTS ", commonValues)
-//       //currently only compares 2 users
-//   })
-// })
+app.put('/allReady', (req, res) => {
+  const {roomCode} = req.body
+  Room.findOne({roomCode: roomCode}, (err, room) =>{
+        let guests = room.roomGuests
+        let good2go = guests.every((userObj)=>{
+          console.log("userObj ", userObj)
+          return userObj.gameDone === true;
+        })
+        if(good2go){
+          res.json({result: true})
+        } else {
+          res.json({result: false})
+        }
+  })
+})
+
+app.put('/resultFinder', (req,res) =>{
+  const {roomCode} = req.body
+  Room.findOne({roomCode: roomCode}, (err, room) =>{
+    res.json({result: room.roomResult})
+  })
+})
 
 app.put('/genie', (req, res) =>{
   const {roomCode} = req.body
@@ -243,21 +232,20 @@ app.put('/genie', (req, res) =>{
             return choice
           }
           console.log("WE EATIN AT ", maxKey(countedResults))
-          res.json({result:  maxKey(countedResults)})
+          room.roomResult = maxKey(countedResults)
+          room.markModified('roomResult')
+          room.save((err, result) => {
+            if(err){
+              res.status(500).json(err)
+            } else {
+              res.json({result:  maxKey(countedResults)})
+            }
+          })
         } else {
           res.json({result: "hunger"})
         }
       })
   })
-  // console.log("allResults ", allResults)
-  // let obj= allResults;
-  //   }, {})
-  // let arr = Object.values(obj);
-  // let max = math.max(...arr);
-  // return max
-  // room.roomResults = max
-  // console.log("WE EATIN AT ", max)
-  // }
 
 app.put('/endroom', (req, res) => {
  const {roomCode} = req.body

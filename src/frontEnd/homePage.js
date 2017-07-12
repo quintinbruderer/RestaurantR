@@ -47,8 +47,7 @@ export default class HomePage extends Component {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({username: this.state.username, roomCode: this.state.roomCode})
-    }).then(this.setState({initialize: true}))//put a concat here? since we are
-                                              //   adding new users onto the existing???
+    }).then(this.setState({initialize: true}))
 
   }
 

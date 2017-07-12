@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import 'whatwg-fetch';
 import {Redirect} from 'react-router-dom';
 
-
 export default class Games extends Component {
   constructor(props){
     super(props)
@@ -20,7 +19,6 @@ export default class Games extends Component {
     this.sendResults = this.sendResults.bind(this)
     this.gameDone = this.gameDone.bind(this)
   }
-
 
   componentDidMount() {
     (console.log('componentDidMount()'))
@@ -52,8 +50,7 @@ export default class Games extends Component {
     var choices = this.state.chosen;
     if(e.target.checked ){
       choices.push(e.target.value)
-    }
-    else{
+    } else {
       choices = choices.filter((value)=>value !== e.target.value)
     }
     this.setState({chosen: choices})
@@ -64,7 +61,7 @@ export default class Games extends Component {
     var roomCode = this.state.roomCode;
     var username = this.state.username;
     console.log("MOAR LOG ", roomCode, username)
-    fetch('/gameDone',{
+    return fetch('/gameDone',{
       method: 'PUT',
       headers: {
         'Content-Type' : 'application/json'
@@ -74,7 +71,6 @@ export default class Games extends Component {
 
     }).then(result => result.json())
   }
-
 
   sendResults(){
     fetch('/preferences',{
@@ -89,8 +85,6 @@ export default class Games extends Component {
       .then(this.setState({initialize3: true}))
 
   }
-
-
 
   render() {
     if(this.state.initialize3){
