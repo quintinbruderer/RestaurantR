@@ -44,7 +44,7 @@ export default class Waiting extends Component {
   }
 
   render(){
-    setInterval(this.readyCheck(), 5000)
+    setInterval(this.readyCheck(), 3000)
     if(this.state.initialize4){
       return(
         <Redirect push to={'/Results/' + this.state.roomCode}/>

@@ -10,9 +10,11 @@ export default class Lobby extends Component {
       username: this.props.match.params.username,
       roomGuests: '',
       initialize2: false,
-      roomList: ''
+      roomList: '',
+      refreshId: ''
     }
     this.userList = this.userList.bind(this)
+    this.getList = this.getList.bind(this)
   }
 
   componentDidMount() {
@@ -24,15 +26,18 @@ export default class Lobby extends Component {
       body: JSON.stringify({roomCode: this.state.roomCode,
               lat: this.state.lat,
               lng: this.state.lng})
-    }).then(result => result.json())
-      .then(
-        fetch('/lobby/' + this.state.roomCode, {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }).then (result => result.json())
-          .then ((result) => this.setState({roomGuests: result.roomGuests})
-          )
+    })
+    .then(result => result.json())
+    .then((result) => this.setState({refreshId: setInterval(this.getList.bind(this), 3000)}))
+  }
+
+  getList(){
+    fetch('/lobby/' + this.state.roomCode, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then (result => result.json())
+      .then ((result) => this.setState({roomGuests: result.roomGuests})
       )
   }
 
@@ -45,8 +50,9 @@ export default class Lobby extends Component {
   }
 
   render(){
-    console.log("LAG ", this.state.roomGuests)
+
     if(this.state.initialize2){
+        clearInterval(this.state.refreshId)
       return(
         <Redirect push to={'/Games/' + this.state.roomCode + '/' + this.state.username}/>
       )
