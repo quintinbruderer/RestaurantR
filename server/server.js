@@ -220,16 +220,11 @@ app.put('/genie', (req, res) =>{
 
           }, {})
           const maxKey = (obj) => {
-            let maxScore = 0;
-            let choice = "";
-            Object.keys(obj).forEach(key =>{
-              if (obj[key] > maxScore){
-                //ties go to first restaurant in loop
-                maxScore = obj[key];
-                choice = key;
-              }
-            })
-            return choice
+          const voteArray = Object.keys(obj).map(key=>obj[key]);
+          const maxVotes = Math.max.apply(null, voteArray);
+          const choices = Object.keys(obj).filter(key => obj[key] === maxVotes)
+
+            return choices
           }
           console.log("WE EATIN AT ", maxKey(countedResults))
           room.roomResult = maxKey(countedResults)

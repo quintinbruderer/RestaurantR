@@ -7,7 +7,7 @@ export default class Results extends Component {
     super(props)
     this.state = {
       roomCode: this.props.match.params.roomCode,
-      result: "",
+      result: [],
       initialize5: false
     }
     this.allDone = this.allDone.bind(this)
@@ -43,7 +43,7 @@ export default class Results extends Component {
       return(
         <div>
           <div>
-            <p>EAT AT {this.state.result}</p>
+            <p>EAT AT {this.state.result.join(', ')}</p>
           </div>
           <div>
           <button onClick={this.allDone}>Return to Home Page</button>

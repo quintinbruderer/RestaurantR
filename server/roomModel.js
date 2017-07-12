@@ -11,7 +11,7 @@ const room = mongoose.Schema({
                  lng: Number},
   roomList: Array,
   restResults: Array,
-  roomResult: String
+  roomResult: Array
   });
 
 const UserModel = mongoose.model('Room', room);
