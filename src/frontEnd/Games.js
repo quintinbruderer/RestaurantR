@@ -69,7 +69,8 @@ export default class Games extends Component {
       body: JSON.stringify({roomCode: roomCode,
                             username: username})
 
-    }).then(result => result.json())
+    })
+    .then(result => result.json())
   }
 
   sendResults(){
@@ -81,7 +82,7 @@ export default class Games extends Component {
       body: JSON.stringify({roomCode: this.state.roomCode,
                            chosen: this.state.chosen})
     }).then(result => result.json())
-      .then(this.gameDone())
+      .then(this.gameDone)
       .then(this.setState({initialize3: true}))
 
   }
@@ -96,7 +97,7 @@ export default class Games extends Component {
       return(
         <div>
           <div>
-          <p>{this.state.username + ' , check each restraunt you would be happy to eat at.'}</p>
+          <p>{this.state.username + ', check each restraunt you would be happy to eat at.'}</p>
           </div>
             <div>
               <ul>
