@@ -9,10 +9,12 @@ export default class Waiting extends Component {
     this.state = {
       roomCode: this.props.match.params.roomCode,
       username: this.props.match.params.username,
-      initialize4: false
+      initialize4: false,
+      refreshWait: ''
     }
     this.readyCheck = this.readyCheck.bind(this)
   }
+
 
   componentDidMount(){
     fetch('/genie', {
@@ -21,7 +23,11 @@ export default class Waiting extends Component {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({roomCode: this.state.roomCode})
-    }).then(result => result.json())
+    })
+    .then(result => result.json())
+    .then(this.readyCheck)
+    //.then(this.setState({refreshWait: setInterval(this.readyCheck.bind(this),3000)}))
+
   }
 
   readyCheck(){
@@ -44,8 +50,8 @@ export default class Waiting extends Component {
   }
 
   render(){
-    setInterval(this.readyCheck(), 3000)
     if(this.state.initialize4){
+      //clearInterval(this.state.refreshWait)
       return(
         <Redirect push to={'/Results/' + this.state.roomCode}/>
       )

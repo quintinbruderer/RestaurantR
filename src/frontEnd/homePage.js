@@ -2,6 +2,10 @@ import React, {Component} from 'react';
 import 'whatwg-fetch';
 import geolocation from './geolocation';
 import {Redirect} from 'react-router-dom';
+import Facebook from './facebook';
+import Zomato from 'zomato.js';
+
+const zom = new Zomato('b3549408bdd1a9da0380f2f2aaf4efa6')
 
 export default class HomePage extends Component {
   constructor(props) {
@@ -11,8 +15,10 @@ export default class HomePage extends Component {
       lat: '',
       lng: '',
       roomCode: '',
-      initialize: false
+      initialize: false,
+      lucky: ''
     }
+    this.imFeelingLucky = this.imFeelingLucky.bind(this)
     this.roomCreation = this.roomCreation.bind(this)
     this.joinTheParty = this.joinTheParty.bind(this)
   }
@@ -21,6 +27,18 @@ export default class HomePage extends Component {
     geolocation.getGeolocation(location => this.setState({lat: location.lat,
                                                           lng: location.lng}));
   }
+  imFeelingLucky() {
+    zom.search({
+      lat: this.state.lat,
+      lon: this.state.lng
+    })
+    .then((result) => result.map((obj) => obj.name))
+    .then((result) => {
+      let randNum = (Math.floor(Math.random() * result.length-1));
+      this.setState({lucky: result[randNum]})
+    })
+  }
+
 
   roomCreation() {
 
@@ -60,7 +78,7 @@ export default class HomePage extends Component {
         <div>
         <span>
           User Name
-            <input type="text" name="User Name" onChange={(e) => this.setState({username: e.target.value})}></input>
+            <input type="text" name="User Name" id="username" onChange={(e) => this.setState({username: e.target.value})}></input>
             <button value="Create Room" onClick={this.roomCreation}>Create Room</button>
           Join Existing Room
             <input type="text" name="Room Code" onChange={(e) => this.setState({roomCode: e.target.value})}></input>
@@ -73,6 +91,11 @@ export default class HomePage extends Component {
             Please put a username to create a room, or a username and a code to join a room.
             </p>
           </div>
+          <Facebook />
+          <div>
+          <button onClick={this.imFeelingLucky}>I'm Feeling Lucky</button>
+          <p>{this.state.lucky}</p>
+        </div>
         </div>
       )
     }
