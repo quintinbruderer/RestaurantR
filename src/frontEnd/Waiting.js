@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import 'whatwg-fetch';
 import {Redirect} from 'react-router-dom';
+import burger from '../assets/burger.png';
 
 //this page is a waiting page displayed while slower users complete their survey
 export default class Waiting extends Component {
@@ -64,6 +65,9 @@ export default class Waiting extends Component {
           <p>
           Waiting for others to finish voting
         </p>
+          <div>
+          <img src={burger} id="burger" height="100" width="auto"></img>
+          </div>
         </div>
         )
       }

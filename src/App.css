@@ -201,9 +201,12 @@
 }
          this is currently worthless. Looking into the documentary for https://www.npmjs.com/package/react-facebook-login
          We should dig into this when the time comes
-
-@keyframes App-logo-spin {
+*/
+#burger  {
+  animation: app-logo-spin infinite 15s linear;
+  padding: 10px;
+}
+@keyframes app-logo-spin {
  from { transform: rotate(0deg); }
  to { transform: rotate(360deg); }
 }
-*/
