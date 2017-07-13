@@ -43,7 +43,7 @@ export default class Results extends Component {
       return(
         <div>
           <div>
-            <p>Bon Appetite! {this.state.result.join(', ')}</p>
+            <p>Bon Appetite! Everyone has agreed upon: {this.state.result.join(', ')}</p>
           </div>
           <div>
           <button className="btn" onClick={this.allDone}>Return to Home Page</button>
