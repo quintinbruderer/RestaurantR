@@ -4,6 +4,7 @@ import geolocation from './geolocation';
 import {Redirect} from 'react-router-dom';
 import Facebook from './facebook';
 import Zomato from 'zomato.js';
+import PoweredByZom from '../assets/PoweredByZom.png';
 
 const zom = new Zomato('b3549408bdd1a9da0380f2f2aaf4efa6')
 
@@ -96,7 +97,9 @@ export default class HomePage extends Component {
             <button className="btn" onClick={this.imFeelingLucky}>I'm Feeling Lucky</button>
             <p>{this.state.lucky}</p>
         </div>
-          <p>powered by Zomato</p>
+          <div>
+            <a href="https://www.zomato.com" ><img src={PoweredByZom} alt="zomato" height="100" width="auto"></img> </a>
+          </div>
         </div>
       )
     }
