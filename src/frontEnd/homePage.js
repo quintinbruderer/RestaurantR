@@ -80,7 +80,7 @@ export default class HomePage extends Component {
               <p>User Name</p>
               <input type="text" name="User Name" id="username" onChange={(e) => this.setState({username: e.target.value})}></input>
               <button className="btn" value="Create Room" onClick={this.roomCreation}>Create Room</button>
-              <p>Enter Username Above and Room's Code Below to Join Existing Room</p>
+              <p>Enter Username Above and Rooms Code Below to Join Existing Room</p>
               <input type="text" name="Room Code" onChange={(e) => this.setState({roomCode: e.target.value})}></input>
               <button className="btn" value="Join Room" onClick ={
               this.joinTheParty}>Join Room</button>

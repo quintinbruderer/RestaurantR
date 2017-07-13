@@ -13,10 +13,15 @@ export default class Waiting extends Component {
       refreshWait: ''
     }
     this.readyCheck = this.readyCheck.bind(this)
+    this.genie = this.genie.bind(this)
   }
 
 
   componentDidMount(){
+    this.setState({refreshWait: setInterval(this.genie.bind(this),3000)})
+  }
+
+  genie(){
     fetch('/genie', {
       method: 'PUT',
       headers: {
@@ -26,9 +31,7 @@ export default class Waiting extends Component {
     })
     .then(result => result.json())
     .then(this.readyCheck)
-    //.then(this.setState({refreshWait: setInterval(this.readyCheck.bind(this),3000)}))
-
-  }
+      }
 
   readyCheck(){
     fetch('/allReady', {
