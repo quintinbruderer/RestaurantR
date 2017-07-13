@@ -223,8 +223,10 @@ app.put('/genie', (req, res) =>{
           const voteArray = Object.keys(obj).map(key=>obj[key]);
           const maxVotes = Math.max.apply(null, voteArray);
           const choices = Object.keys(obj).filter(key => obj[key] === maxVotes)
+          let randNum = Math.floor(Math.random() * choices.length-1);
 
-            return choices
+          return choices//choices.length > 1 ? choices[randNum]: choices[0]
+
           }
           console.log("WE EATIN AT ", maxKey(countedResults))
           room.roomResult = maxKey(countedResults)

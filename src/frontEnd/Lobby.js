@@ -62,7 +62,7 @@ export default class Lobby extends Component {
           <h1> {this.props.match.params.roomCode} </h1>
           <span>
             <p>{this.userList()}</p>
-            <button onClick={(event) => this.setState({initialize2: true})}>Go</button>
+            <button className="btn" onClick={(event) => this.setState({initialize2: true})}>Go</button>
           </span>
         </div>
       )

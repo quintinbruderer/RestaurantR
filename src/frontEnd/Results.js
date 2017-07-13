@@ -43,10 +43,10 @@ export default class Results extends Component {
       return(
         <div>
           <div>
-            <p>EAT AT {this.state.result.join(', ')}</p>
+            <p>Bon Appetite! {this.state.result.join(', ')}</p>
           </div>
           <div>
-          <button onClick={this.allDone}>Return to Home Page</button>
+          <button className="btn" onClick={this.allDone}>Return to Home Page</button>
           </div>
         </div>
       )
