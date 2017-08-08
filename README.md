@@ -1,3 +1,14 @@
+Using React, Express and MongoDB a team consisting of Thomas Elrod, Brenda Nickisch & Quinn Bruderer, created a basic web app using the Zomato API. This web app is intended to answer the famous 'ol questionare, "Where would you like to go for dinner tonight?"
+
+
+
+
+
+
+
+
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 Below you will find some information on how to perform common tasks.<br>
